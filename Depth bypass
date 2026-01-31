@@ -1,0 +1,432 @@
+# Tree Check (Проверка на дерево)
+
+| | |
+| :--- | :--- |
+| **Input** | Standard input |
+| **Output** | Standard output |
+
+### Problem Statement
+Given an undirected graph, determine whether it is a **tree**. 
+
+Recall that an undirected graph is called a **tree** if it is both **connected** and contains **no cycles**.
+
+### Input Format
+- The first line contains a single natural number $N$ ($1 \le N \le 100$) — the number of vertices in the graph.
+- The following $N$ lines contain the $N \times n$ adjacency matrix: the element at row $i$ and column $j$ is `1` if vertices $i$ and $j$ are connected by an edge, and `0` otherwise.
+- The main diagonal contains only zeros, and the matrix is symmetric.
+
+### Output Format
+Print **YES** if the graph is a tree, and **NO** otherwise.
+
+### Examples
+| Input | Output |
+| :--- | :--- |
+| `6` <br> `0 1 1 0 0 0` <br> `1 0 1 0 0 0` <br> `1 1 0 0 0 0` <br> `0 0 0 0 1 0` <br> `0 0 0 1 0 0` <br> `0 0 0 0 0 0` | `NO` |
+| `3` <br> `0 1 0` <br> `1 0 1` <br> `0 1 0` | `YES` |
+
+#include <iostream>
+
+using namespace std;
+
+int graph[100][100]; 
+int color[100]; 
+int n; 
+ 
+void dfs(int v) {
+    if (color[v] != 0) 
+        return;
+    color[v] = 1;
+    for (int i = 0; i < n; i++) {
+        if (graph[v][i] == 1) {
+            dfs(i);
+        }
+    }  
+    color[v] = 2;  
+    return;
+}
+
+int main() {
+    cin >> n;
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            cin >> graph[i][j];
+        }
+    }
+    
+    int a = 0;
+    for (int i = 0; i < n; i++) {
+        for (int j = i + 1; j < n; j++) {
+            if (graph[i][j] == 1) {
+                a++;
+            }
+        }
+    }
+    
+    if (a != n - 1) {
+        cout << "NO" << endl;
+        return 0;
+    }
+    
+    for (int i = 0; i < n; i++) {
+        color[i] = 0;
+    }
+
+    dfs(0);
+    
+    for (int i = 0; i < n; i++) {
+        if (color[i] == 0) {
+            cout << "NO" << endl;
+            return 0;
+        }
+    }
+    
+    cout << "YES" << endl;
+    return 0;
+}
+
+
+
+# Connected Components (Компоненты связности)
+
+| | |
+| :--- | :--- |
+| **Input** | Standard input |
+| **Output** | Standard output |
+
+### Problem Statement
+Given an undirected graph, you need to count the number of its **connected components**.
+
+### Input Format
+- The first line contains two integers $N$ and $M$ ($1 \le N \le 100, 0 \le M \le 10,000$) — the number of vertices and edges, respectively.
+- The next $M$ lines contain two integers $i$ and $j$ ($1 \le i, j \le N$) each, indicating that vertices $i$ and $j$ are connected by an edge.
+
+### Output Format
+Print a single integer — the total number of connected components in the graph.
+
+### Examples
+| Input | Output |
+| :--- | :--- |
+| `6 4` <br> `3 1` <br> `1 2` <br> `5 4` <br> `2 3` | `3` |
+
+#include <iostream>
+using namespace std;
+
+int graph[101][101]; 
+int color[101]; 
+int n, m; 
+ 
+void dfs(int v) {
+    if (color[v] != 0) 
+        return;
+    color[v] = 1;
+    for (int i = 1; i <= n; i++) {
+        if (graph[v][i] == 1) {
+            dfs(i);
+        }
+    }  
+}
+
+int main() {
+    cin >> n >> m;
+    
+    for (int i = 0; i < m; i++) {
+        int a, b;
+        cin >> a >> b;
+        graph[a][b] = 1;
+        graph[b][a] = 1;
+    }
+    
+    for (int i = 1; i <= n; i++) {
+        color[i] = 0;
+    }
+    
+    int c = 0;
+    for (int i = 1; i <= n; i++) {
+        if (color[i] == 0) {
+            c++;
+            dfs(i);
+        }
+    }
+    
+    cout << c << endl;
+    return 0;
+}
+
+
+# Furthest Vertex in a Tree (Самая удаленная вершина)
+
+| | |
+| :--- | :--- |
+| **Input** | Standard input |
+| **Output** | Standard output |
+
+### Problem Statement
+Given a tree and a specific starting vertex, find the vertex that is furthest away from it. 
+
+Recall that an undirected graph is called a **tree** if it is connected and contains no cycles. The distance between two vertices is defined as the number of edges in the shortest path between them.
+
+### Input Format
+- The first line contains two integers: $n$ — the number of vertices in the tree, and $k$ — the index of the starting vertex ($1 \le k \le n \le 100$).
+- The following $n$ lines contain the $n \times n$ adjacency matrix of the tree.
+
+### Output Format
+Print the index of the vertex that is furthest from vertex $k$. 
+- If there are multiple such vertices, you may output any of them. 
+- If the furthest vertex from $k$ is $k$ itself (e.g., if $n=1$), print $k$.
+
+### Examples
+| Input | Output |
+| :--- | :--- |
+| `4 2` <br> `0 1 0 1` <br> `1 0 1 0` <br> `0 1 0 0` <br> `1 0 0 0` | `4` |
+
+#include <iostream>
+
+using namespace std;
+
+int graph[100][100];
+int visited[100]; 
+int dist[100];
+int n;
+
+    void dfs(int v, int d){
+        if (visited[v]) {
+        return;
+        }
+        visited[v] = 1;
+        dist[v] = d;
+
+        for(int i = 0; i < n; i++){
+        if(graph[v][i] == 1) {
+            dfs(i, d + 1);
+
+        }
+
+    }
+}
+int main(){
+    int k;
+    cin >> n >> k;
+    k--;
+
+  for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            cin >> graph[i][j];
+        }
+    }
+    
+    for (int i = 0; i < n; i++){
+        visited[i] = 0;
+        dist[i] = 0;
+
+    }
+
+dfs (k, 0);
+int mdist = 0;
+int answer = k;
+
+for(int i = 0; i < n; i++){
+    if (dist[i] > mdist){
+        mdist = dist[i];
+        answer = i;
+    }
+}
+cout << answer + 1 << endl;
+return 0;
+}
+
+
+# Bead Necklace (Maximum Path in a Tree)
+
+| | |
+| :--- | :--- |
+| **Input** | Standard input |
+| **Output** | Standard output |
+
+### Problem Statement
+A young boy is making a necklace out of beads. He has many numbered beads, each with a unique ID from $1$ to $N$. He lays all the beads on the floor and connects them in such a way that **no closed figures (cycles)** are formed. Every bead ends up connected to at least one other bead. 
+
+Your task is to determine the **maximum number of beads** in the longest chain of consecutively connected beads (the diameter of the tree in terms of the number of vertices).
+
+### Input Format
+- The first line contains the number of beads $N$ ($0 \le N \le 2500$).
+- The following $N-1$ lines each contain two integers — the IDs of the beads that are connected to each other.
+
+### Output Format
+Print a single integer — the maximum possible number of beads in a sequence.
+
+### Examples
+| Input | Output |
+| :--- | :--- |
+| `2` <br> `1 2` | `2` |
+| `5` <br> `2 1` <br> `2 3` <br> `2 4` <br> `2 5` | `3` |
+
+#include <iostream>
+
+using namespace std;
+
+const int MAX_N = 2501;
+int graph[MAX_N][MAX_N];
+int visited[MAX_N]; 
+int dist[MAX_N];
+int n;
+
+int h;
+int mdist;
+
+    void dfs(int v, int d){
+        if (visited[v]) {
+        return;
+        }
+        visited[v] = 1;
+        dist[v] = d;
+
+
+        if(d > mdist){
+            mdist = d;
+            h = v;
+        }
+
+        for(int i = 0; i < n; i++){
+        if(graph[v][i] == 1) {
+            dfs(i, d + 1);
+
+        }
+
+    }
+}
+int main(){
+    int k;
+    cin >> n;
+
+if (n == 0){
+    cout << 0 << endl;
+}
+if (n == 1){
+    cout << 1 << endl;
+    return 0;
+}
+
+for (int i = 0; i < n; i++){
+    for(int j = 0; j < n; j++){
+        graph[i][j] = 0;
+    }
+}
+
+  for (int i = 0; i < n - 1; i++) {
+    int u, v;
+    cin >> u >> v;
+    u--; v--;
+    graph[u][v] = 1;
+    graph[v][u] = 1; 
+        }
+        for(int i = 0; i < n; i++){
+            visited[i] = 0;
+            dist[i] = 0;
+        }
+        mdist = 0;
+        h = 0;
+        dfs(0,0);
+
+        int end = h;
+
+        for (int i = 0; i < n; i++){
+            visited[i] = 0;
+        }
+        mdist = 0;
+
+        dfs(end, 0);
+
+cout << mdist + 1 << endl;
+
+return 0;
+}
+
+
+# Field Counting (Подсчет полей)
+
+| | |
+| :--- | :--- |
+| **Input** | Standard input |
+| **Output** | Standard output |
+
+### Problem Statement
+A manager of a rectangular plot of land $N$ meters wide and $M$ meters long needs your help. The plot is divided into small $1 \times 1$ meter squares and consists of several separate fields. 
+
+Formally, a **field** is a collection of squares that satisfies the following conditions:
+1.  **Connectivity**: You can reach any square in a field from any other square of the same field by moving between squares that share a common side.
+2.  **Isolation**: No two fields intersect or touch each other horizontally or vertically (along the sides of the squares). However, fields **are allowed to touch diagonally** (at the corners).
+
+Write a program that automates the process of counting the number of fields on the plot.
+
+***
+
+### Input Format
+- The first line contains two integers $N$ and $M$ ($1 \le N, M \le 200$) — the dimensions of the plot.
+- The next $N$ lines contain $M$ characters each.
+- The character `#` represents a square belonging to a field.
+- The character `.` represents an empty square.
+
+***
+
+### Output Format
+Print a single integer — the total number of fields on the plot.
+
+***
+
+### Examples
+| Input | Output |
+| :--- | :--- |
+| `5 10` <br> `##......#.` <br> `.#..#...#.` <br> `.###....#.` <br> `..##....#.` <br> `........#.` | `3` |
+
+#include <iostream>
+using namespace std;
+
+const int MAX_N = 205;
+char grid[MAX_N][MAX_N];
+bool visited[MAX_N][MAX_N];
+int n, m;
+
+int dx[4] = {-1, 1, 0, 0};
+int dy[4] = {0, 0, -1, 1};
+
+void dfs(int x, int y) {
+    visited[x][y] = true;
+    
+    for (int i = 0; i < 4; i++) {
+        int nx = x + dx[i];
+        int ny = y + dy[i];
+        
+        if (nx >= 0 && nx < n && ny >= 0 && ny < m &&
+            grid[nx][ny] == '#' && !visited[nx][ny]) {
+            dfs(nx, ny);
+        }
+    }
+}
+
+int main() {
+    cin >> n >> m;
+    
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < m; j++) {
+            cin >> grid[i][j];
+            visited[i][j] = false;
+        }
+    }
+    
+    int a = 0;
+    
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < m; j++) {
+            if (grid[i][j] == '#' && !visited[i][j]) {
+                a++;
+                dfs(i, j);
+            }
+        }
+    }
+    
+    cout << a << endl;
+    
+    return 0;
+}
+
+
