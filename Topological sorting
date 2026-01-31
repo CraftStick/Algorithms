@@ -1,0 +1,351 @@
+# Cycle Detection in a Directed Graph
+
+| | |
+| :--- | :--- |
+| **Input** | Standard input |
+| **Output** | Standard output |
+
+### Problem Statement
+Given a directed graph, determine whether it contains at least one **cycle**.
+
+### Input Format
+- The first line contains the number of vertices $N$ ($N \le 50$).
+- The following $N$ lines each contain $N$ integers (0 or 1), representing the adjacency matrix.
+- The $j$-th number in the $i$-th row is `1` if there is a directed edge from vertex $i$ to vertex $j$.
+- It is guaranteed that the main diagonal of the matrix contains only zeros.
+
+### Output Format
+Print `1` if the graph contains at least one cycle, and `0` otherwise.
+
+### Examples
+| Input | Output |
+| :--- | :--- |
+| `3` <br> `0 1 0` <br> `0 0 1` <br> `0 0 0` | `0` |
+
+#include <iostream>
+using namespace std;
+
+int n;
+int m[50][50];
+int color[50];
+int found = 0; 
+
+void dfs(int v) {
+    color[v] = 1;
+    
+    for (int u = 0; u < n; u++) {
+        if (m[v][u] == 1) {
+            if (color[u] == 1) {
+                found = 1;
+                return;
+            }
+            if (color[u] == 0) {
+                dfs(u);
+                if (found) 
+                  return; 
+            }
+        }
+    }
+    
+    color[v] = 2;
+}
+
+int main() {
+    cin >> n;
+    
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            cin >> m[i][j];
+        }
+    }
+    
+    for (int i = 0; i < n; i++) {
+        color[i] = 0;
+    }
+    
+    for (int i = 0; i < n; i++) {
+        if (color[i] == 0) {
+            dfs(i);
+            if (found) {
+                cout << 1;
+                return 0;
+            }
+        }
+    }
+    
+    cout << 0;
+    return 0;
+}
+
+
+# 1. Cheat Detection (Детекция списывания)
+
+| | |
+| :--- | :--- |
+| **Input** | Standard input |
+| **Output** | Standard output |
+
+### Problem Statement
+The "MSHP" (Moscow School of Programming) is developing an innovative cheat detection algorithm. One module of this algorithm needs to determine if it is possible to divide the students in a class into **two groups**: those who cheat ("borrowers") and those who provide the answers ("helpers"). 
+
+You are given all pairs of students who exchanged suspicious messages. Determine if the students can be split into two groups such that every message exchange occurred between students from **different** groups.
+
+### Input Format
+- The first line contains two integers $N$ and $M$ — the number of students and the number of suspicious message pairs ($1 \le N \le 100$, $0 \le M \le \frac{N(N-1)}{2}$).
+- The next $M$ lines contain descriptions of student pairs: two integers representing the IDs of the students (numbered from 1). 
+- Each pair is listed no more than once.
+
+### Output Format
+Print **YES** if it is possible to divide the students into two groups according to the requirements, and **NO** otherwise.
+
+### Examples
+| Input | Output |
+| :--- | :--- |
+| `3 2` <br> `1 2` <br> `2 3` | `YES` |
+| `3 3` <br> `1 2` <br> `2 3` <br> `1 3` | `NO` |
+
+#include <iostream>
+using namespace std;
+
+int graph[101][101]; 
+int color[101];
+int N;
+
+bool dfs(int v, int col) {
+    color[v] = col;
+    for (int u = 1; u <= N; u++) {
+        if (graph[v][u] == 1) { 
+            if (color[u] == 0) {
+                if (!dfs(u, 3 - col)) {
+                    return false;
+                }
+            } else if (color[u] == col) {
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
+int main() {
+    int M;
+    cin >> N >> M;
+    for (int i = 1; i <= N; i++) {
+        color[i] = 0;
+        for (int j = 1; j <= N; j++) {
+            graph[i][j] = 0;
+        }
+    }
+    for (int i = 0; i < M; i++) {
+        int a, b;
+        cin >> a >> b;
+        graph[a][b] = 1;
+        graph[b][a] = 1; 
+    }
+  
+    bool possible = true;
+    for (int i = 1; i <= N; i++) {
+        if (color[i] == 0) {
+            if (!dfs(i, 1)) {
+                possible = false;
+                break;
+            }
+        }
+    }
+    
+    if (possible) {
+        cout << "YES" << endl;
+    } else {
+        cout << "NO" << endl;
+    }
+    
+    return 0;
+}
+
+
+# 1. Wallets and Keys (Кошельки и ключи)
+
+| | |
+| :--- | :--- |
+| **Input** | Standard input |
+| **Output** | Standard output |
+
+### Problem Statement
+Feofan has $N$ "not-quite-electronic" wallets, numbered from 1 to $N$. Each wallet can be opened only by its unique corresponding key or by being smashed (which is why it's not quite electronic). 
+
+Feofan has placed each key inside one of the wallets (you know exactly which key is in which wallet). Now, Feofan needs to access the money in all the wallets while smashing as few of them as possible. Help him determine the minimum number of wallets he needs to smash to get all the keys and open all the wallets.
+
+### Input Format
+- The first line contains the integer $N$ ($1 \le N \le 100,000$) — the number of wallets.
+- The next $N$ lines describe the location of each key: the $i$-th line contains the number of the wallet where the key for the $i$-th wallet is kept.
+
+### Output Format
+Print a single integer — the minimum number of wallets that must be smashed.
+
+### Notes
+In the provided example, smashing wallets 2 and 4 is sufficient to gain access to all of them.
+
+### Examples
+| Input | Output |
+| :--- | :--- |
+| `4` <br> `2` <br> `1` <br> `2` <br> `4` | `2` |
+
+#include <iostream>
+using namespace std;
+
+const int MAXN = 100010;
+
+int a[MAXN];
+int visited[MAXN];
+
+int main() {
+    int N;
+    cin >> N;
+    
+    for (int i = 1; i <= N; i++) {
+        cin >> a[i];
+        visited[i] = 0;
+    }
+    
+    int step = 1;
+    int answer = 0;
+    
+    for (int i = 1; i <= N; i++) {
+        if (visited[i] == 0) {
+            int v = i;
+            while (visited[v] == 0) {
+                visited[v] = step;
+                v = a[v];
+            }
+            
+            if (visited[v] == step) {
+                answer++;
+            }
+            
+            step++;
+        }
+    }
+    
+    cout << answer << endl;
+    
+    return 0;
+}
+
+
+# 1. Rocket Production (Производство ракеты)
+
+| | |
+| :--- | :--- |
+| **Input** | Standard input |
+| **Output** | Standard output |
+| **Time Limit** | 2 seconds |
+| **Memory Limit** | 64 megabytes |
+
+### Problem Statement
+A rocket intended for a Mars expedition consists of exactly $n$ parts, numbered from 1 to $n$. Each part $i$ takes $t_i$ minutes to manufacture. There is only one factory in the world capable of producing these parts, and it can only work on **one part at a time**.
+
+To produce certain parts, a specific set of other parts must already be manufactured. Your goal is to manufacture **part number 1** in the shortest possible time to present it to investors. Find the minimum time required and the sequence of production.
+
+### Input Format
+- The first line contains an integer $n$ ($1 \le n \le 100,000$) — the number of rocket parts.
+- The second line contains $n$ natural numbers $t_1, t_2, \dots, t_n$ ($t_i \le 10^9$) — the time required to manufacture each part.
+- Each of the following $n$ lines describes the production requirements:
+  - The $i$-th line contains the number of parts $c_i$ required to produce part $i$, followed by their IDs.
+- The sum of all $c_i$ does not exceed 200,000.
+- It is guaranteed that there are no cyclic dependencies.
+
+### Output Format
+- **Line 1**: Two numbers — the minimum time (in minutes) required to produce part 1, and the total number of parts $k$ that must be manufactured.
+- **Line 2**: $k$ integers — the IDs of the parts in the order they should be produced.
+
+### Examples
+| Input | Output |
+| :--- | :--- |
+| `3` <br> `100 200 300` <br> `1 2` <br> `0` <br> `2 2 1` | `300 2` <br> `2 1` |
+
+#include <iostream>
+#include <vector>
+using namespace std;
+
+const int MAXV = 100000;
+bool visited[MAXV];
+int Time[MAXV];
+vector<int> answer;
+vector<int> g[MAXV];
+int n;
+
+void dfs(int v) {
+    visited[v] = true;
+    for (int i : g[v]) {
+        if (!visited[i])
+            dfs(i);
+    }
+    answer.push_back(v);
+}
+
+int main() {
+    cin >> n;
+    
+    for (int i = 0; i < n; ++i) {
+        cin >> Time[i];
+    }
+    
+    for (int i = 0; i < n; ++i) {
+        int sz;
+        cin >> sz;
+        g[i].resize(sz);
+        for (int &v : g[i]) {
+            cin >> v;
+            --v;
+        }
+    }
+    
+    for (int i = 0; i < n; ++i) {
+        if (!visited[i])
+            dfs(i);
+    }
+    
+    vector<long long> dp(n, 0);
+    
+    for (int v : answer) {
+        long long max_dep_time = 0;
+        for (int u : g[v]) {
+            if (dp[u] > max_dep_time) {
+                max_dep_time = dp[u];
+            }
+        }
+        dp[v] = max_dep_time + Time[v];
+    }
+    
+    vector<bool> needed(n, false);
+    needed[0] = true;
+    
+    for (int i = answer.size() - 1; i >= 0; --i) {
+        int v = answer[i];
+        if (needed[v]) {
+            for (int u : g[v]) {
+                needed[u] = true;
+            }
+        }
+    }
+    
+    vector<int> production_order;
+    for (int v : answer) {
+        if (needed[v]) {
+            production_order.push_back(v);
+        }
+    }
+    long long total_time = 0;
+    for (int v : production_order) {
+        total_time += Time[v];
+    }
+    
+    cout << total_time << " " << production_order.size() << "\n";
+    for (int v : production_order) {
+        cout << v + 1 << " ";
+    }
+    cout << "\n";
+    
+    return 0;
+}
+
