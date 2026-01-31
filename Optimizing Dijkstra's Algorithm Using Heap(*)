@@ -1,0 +1,457 @@
+# The Erased Number (Стертое число)
+
+| | |
+| :--- | :--- |
+| **Input** | Standard input |
+| **Output** | Standard output |
+
+### Problem Statement
+Today in math class, the lesson was about natural numbers. The teacher wrote the numbers from $1$ to $n$ in increasing order on the blackboard. During the break, a student entered the classroom and spoiled the board. Later, in the principal's office, the student confessed, claiming he had only erased **exactly one** number from the board.
+
+Your task is to help the teacher determine if the student is telling the truth. If the sequence currently on the board could have been formed by erasing exactly one number from the original sequence $1, 2, \dots, n$, identify that number.
+
+### Input Format
+- The first line contains an integer $n$ ($2 \le n \le 10^5$) — the number of integers the teacher initially wrote.
+- The second line contains an integer $m$ ($1 \le m \le 10^5$) — the number of integers remaining on the board.
+- The third line contains $m$ integers $a_1, a_2, \dots, a_m$ ($1 \le a_i \le 10^9$) — the numbers remaining on the board in the order they appear.
+
+### Output Format
+- If the student's explanation is plausible (the sequence $a$ could be formed by erasing exactly one number from $1, \dots, n$), print **Yes** on the first line and the erased number on the second line.
+- Otherwise, print **No**.
+
+### Examples
+| Input | Output |
+| :--- | :--- |
+| `4` <br> `3` <br> `1 3 4` | `Yes` <br> `2` |
+| `4` <br> `3` <br> `3 3 3` | `No` |
+| `4` <br> `2` <br> `1 2` | `No` |
+| `4` <br> `4` <br> `1 2 3 4` | `No` |
+| `4` <br> `3` <br> `4 3 1` | `No` |
+
+#include <iostream>
+using namespace std;
+
+int main() {
+    int n, m;
+    cin >> n >> m;
+    
+    int* arr = new int[m];
+    for (int i = 0; i < m; i++) {
+        cin >> arr[i];
+    }
+    
+    if (m != n - 1) {
+        cout << "No";
+        delete[] arr;
+        return 0;
+    }
+    
+    for (int i = 1; i < m; i++) {
+        if (arr[i] <= arr[i - 1]) {
+            cout << "No";
+            delete[] arr;
+            return 0;
+        }
+    }
+    
+    int* seen = new int[n + 1]();
+    long long sum_current = 0;
+    
+    for (int i = 0; i < m; i++) {
+        int v = arr[i];
+        if (v < 1 || v > n || seen[v] == 1) {
+            cout << "No";
+            delete[] arr;
+            delete[] seen;
+            return 0;
+        }
+        seen[v] = 1;
+        sum_current += v;
+    }
+    
+    long long total = (long long)n * (n + 1) / 2;
+    long long missing = total - sum_current;
+    
+    if (missing >= 1 && missing <= n && seen[missing] == 0) {
+        cout << "Yes\n" << missing;
+    } else {
+        cout << "No";
+    }
+    
+    delete[] arr;
+    delete[] seen;
+    
+    return 0;
+}
+
+
+# 1. PE Lesson (Урок физкультуры)
+
+| | |
+| :--- | :--- |
+| **Input** | Standard input |
+| **Output** | Standard output |
+
+### Problem Statement
+In a PE lesson, coach Vladislav lines up his students in a single row. The row is formed as follows:
+1.  All **girls** stand first, followed by all **boys**.
+2.  Girls are sorted in **descending order** of their height.
+3.  Boys are also sorted in **descending order** of their height.
+
+This means that the shortest girl is immediately followed by the tallest boy. Vladislav wants to know the **maximum height difference** between any two students standing next to each other in this line.
+
+### Input Format
+- The first line contains an integer $n$ ($2 \le n \le 50$) — the number of students.
+- The next $n$ lines each contain two integers: $a_i$ and $h_i$ — the gender and height (in cm) of the $i$-th student ($100 \le h_i \le 200$).
+- $a_i = 0$ represents a **girl**, and $a_i = 1$ represents a **boy**.
+
+### Output Format
+Print a single integer — the maximum height difference between adjacent students in the final row.
+
+### Examples
+| Input | Output |
+| :--- | :--- |
+| `6` <br> `0 120` <br> `1 130` <br> `1 142` <br> `1 115` <br> `0 145` <br> `0 134` | `22` |
+
+**Explanation for the example:**
+- Sorted Girls (descending): 145, 134, 120.
+- Sorted Boys (descending): 142, 130, 115.
+- Final Row: **145, 134, 120, 142, 130, 115**.
+- Differences: $|145-134|=11$, $|134-120|=14$, $|120-142|=22$, $|142-130|=12$, $|130-115|=15$.
+- Maximum difference: **22**.
+
+#include <iostream>
+using namespace std;
+
+int main() {
+    int n;
+    cin >> n;
+    
+    int b[50], g[50];
+    int bc = 0, gc = 0;
+    
+    for (int i = 0; i < n; i++) {
+        int a, h;
+        cin >> a >> h;
+        if (a == 0) {
+            g[gc] = h;
+            gc++;
+        } else {
+            b[bc] = h;
+            bc++;
+        }
+    }
+    for (int i = 0; i < gc - 1; i++) {
+        for (int j = i + 1; j < gc; j++) {
+            if (g[i] < g[j]) {
+                int t = g[i];
+                g[i] = g[j];
+                g[j] = t;
+            }
+        }
+    }
+    
+    for (int i = 0; i < bc - 1; i++) {
+        for (int j = i + 1; j < bc; j++) {
+            if (b[i] < b[j]) {
+                int t = b[i];
+                b[i] = b[j];
+                b[j] = t;
+            }
+        }
+    }
+    
+    int all[50];
+    int idx = 0;
+    for (int i = 0; i < gc; i++) {
+        all[idx] = g[i];
+        idx++;
+    }
+    for (int i = 0; i < bc; i++) {
+        all[idx] = b[i];
+        idx++;
+    }
+    
+    int mx = 0;
+    for (int i = 0; i < n - 1; i++) {
+        int d;
+        if (all[i] > all[i + 1]) {
+            d = all[i] - all[i + 1];
+        } else {
+            d = all[i + 1] - all[i];
+        }
+        if (d > mx) mx = d;
+    }
+    
+    cout << mx;
+    
+    return 0;
+}
+# Katya's Birthday (Места за столом)
+
+| | |
+| :--- | :--- |
+| **Input** | Standard input |
+| **Output** | Standard output |
+
+### Problem Statement
+Katya is celebrating her 16th birthday. There are $n$ people (including Katya) sitting around a large circular table. Katya wants to talk to everyone, but shouting across the table is inconvenient. She comes up with a solution: occasionally, she asks the neighbor to her left or right to swap seats with her. The guests kindly agree.
+
+After the guests leave, Katya realizes she left her phone at the spot where she was sitting at the end of the event. She doesn't remember her final position, but she knows her **initial position** and that she swapped seats with a neighbor exactly $k$ times. Help Katya determine the **number of possible positions** she could have ended up in.
+
+### Input Format
+The input contains two natural numbers $n$ and $k$:
+- $n$ — the number of seats at the table ($3 \le n \le 10^9$).
+- $k$ — the number of times Katya swapped seats with a neighbor ($0 \le k \le 10^9$).
+
+### Output Format
+Print a single integer — the number of unique positions Katya could be in after exactly $k$ swaps.
+
+### Examples
+| Input | Output |
+| :--- | :--- |
+| `5 2` | `3` |
+| `3 3` | `3` |
+
+#include <iostream>
+#include <algorithm>
+using namespace std;
+
+int main() {
+    long long n, k;
+    cin >> n >> k;
+    
+    if (n % 2 == 1) {
+        cout << min(n, k + 1);
+    } else {
+        cout << min(n / 2, k + 1);
+    }
+    
+    return 0;
+}
+
+
+# 1. Important Dinner (Рассадка программистов)
+
+| | |
+| :--- | :--- |
+| **Input** | Standard input |
+| **Output** | Standard output |
+
+### Problem Statement
+$N$ famous programmers participated in a Very Important Event. The most important part of any event is the final dinner. The organizers decided to seat all participants at **two tables** (each table is large enough to accommodate everyone).
+
+However, there are conflicts between some programmers, meaning they cannot sit at the same table. Determine if the organizers can seat all the guests according to these restrictions.
+
+### Input Format
+- The first line contains two integers: $N$ and $M$ ($1 \le N, M \le 100$), where $N$ is the number of programmers and $M$ is the number of conflicting pairs.
+- The next $M$ lines each contain 2 integers representing a pair of programmers who cannot sit at the same table.
+
+### Output Format
+- Print **YES** if it is possible to seat all programmers at two tables.
+- Otherwise, print **NO**.
+
+### Examples
+| Input | Output |
+| :--- | :--- |
+| `4 3` <br> `1 2` <br> `2 3` <br> `1 3` | `NO` |
+| `3 2` <br> `1 2` <br> `1 3` | `YES` |
+
+#include <iostream>
+#include <vector>
+using namespace std;
+
+vector<int> g[101];
+int color[101];
+
+bool dfs(int v, int c) {
+    color[v] = c;
+    for (int j = 0; j < g[v].size(); j++) {
+        int u = g[v][j];
+        if (color[u] == 0) {
+            if (!dfs(u, 3 - c))
+                return false;
+        } else if (color[u] == c) {
+            return false;
+        }
+    }
+    return true;
+}
+
+int main() {
+    int n, m;
+    cin >> n >> m;
+    
+    for (int i = 0; i < m; i++) {
+        int a, b;
+        cin >> a >> b;
+        g[a].push_back(b);
+        g[b].push_back(a);
+    }
+    
+    for (int i = 1; i <= n; i++) {
+        if (color[i] == 0) {
+            if (!dfs(i, 1)) {
+                cout << "NO";
+                return 0;
+            }
+        }
+    }
+    
+    cout << "YES";
+    return 0;
+}
+
+
+# 1. Astronaut Training (Книги для космонавтов)
+
+| | |
+| :--- | :--- |
+| **Input** | Standard input |
+| **Output** | Standard output |
+
+### Problem Statement
+Vasya and Petya are one step away from their dream of going to space. To become Bachelors of Applied Cosmonautics, they must both read the same $n$ books. They share a single library card, and they want to finish reading as quickly as possible.
+
+For each book $i$, the time required to read it is $a_i$ (both read at the same speed). They need to plan their reading schedule optimally, subject to the following rules:
+1. Each of the $n$ books must be read by **both** Vasya and Petya.
+2. At any given moment, a book can be read by **at most one** person.
+3. Once a person starts reading a book, they must finish it without interruption (reading is a continuous process).
+
+Find the minimum total time required for both of them to finish all the books.
+
+### Input Format
+- The first line contains an integer $n$ ($1 \le n \le 2 \cdot 10^5$) — the number of books.
+- The second line contains $n$ integers $a_1, a_2, \dots, a_n$ ($1 \le a_i \le 10^9$) — the time required to read each book.
+
+### Output Format
+Print a single integer — the minimum amount of time required for both boys to finish reading all the books.
+
+### Examples
+| Input | Output |
+| :--- | :--- |
+| `5` <br> `1 1 1 1 1` | `5` |
+| `5` <br> `3 2 8 1 1` | `16` |
+
+#include <iostream>
+using namespace std;
+
+int main() {
+    int n;
+    cin >> n;
+    
+    long long a[200001];
+    long long sum = 0, mx = 0;
+    
+    for (int i = 0; i < n; i++) {
+        cin >> a[i];
+        sum += a[i];
+        if (a[i] > mx) mx = a[i];
+    }
+    
+    if (mx > sum - mx) {
+        cout << 2 * mx;
+    } else {
+        cout << sum;
+    }
+    
+    return 0;
+}
+
+
+# Team Disunity (Разобщённость команд)
+
+| | |
+| :--- | :--- |
+| **Input** | Standard input |
+| **Output** | Standard output |
+
+### Problem Statement
+Every year, teachers at the School of Programmers face the challenge of dividing students into teams for the All-Russian Team Olympiad. Each student has a rating $r_i$ ($1 \le r_i \le 10^5$). 
+
+The **disunity** of a team is defined as the difference between the highest and lowest ratings in that team: $(max - min)$.
+
+The goal is to distribute all $n$ students into exactly $m$ teams such that the **maximum disunity among all teams is minimized**. Each team must contain at least one student.
+
+**Example:**
+If $r = [199, 83, 188, 123, 78, 6, 101]$ and we want to form $3$ teams, the minimum possible maximum disunity is $45$. One optimal split is:
+- Team 1: `[6]` (disunity: 0)
+- Team 2: `[78, 83, 101, 123]` (disunity: $123 - 78 = 45$)
+- Team 3: `[188, 199]` (disunity: $199 - 188 = 11$)
+
+Write a program that finds this minimum possible maximum disunity.
+
+### Input Format
+- The first line contains two integers $n$ and $m$ ($1 \le m \le n \le 10^5$) — the number of students and the required number of teams.
+- The next line contains $n$ integers — the ratings of the students ($1 \le r_i \le 10^5$).
+
+### Output Format
+Print a single integer — the minimum disunity achievable with an optimal distribution.
+
+### Examples
+| Input | Output |
+| :--- | :--- |
+| `7 3` <br> `187 178 130 23 2 158 174` | `29` |
+
+ #include <iostream>
+using namespace std;
+
+void qsort(int a[], int l, int r) {
+    if (l >= r) return;
+    int x = a[(l + r) / 2];
+    int i = l, j = r;
+    while (i <= j) {
+        while (a[i] < x) i++;
+        while (a[j] > x) j--;
+        if (i <= j) {
+            int t = a[i];
+            a[i] = a[j];
+            a[j] = t;
+            i++;
+            j--;
+        }
+    }
+    qsort(a, l, j);
+    qsort(a, i, r);
+}
+
+int main() {
+    int n, m;
+    cin >> n >> m;
+    
+    int r[100001];
+    for (int i = 0; i < n; i++) {
+        cin >> r[i];
+    }
+    
+    qsort(r, 0, n - 1);
+    
+    int left = 0, right = r[n-1] - r[0];
+    int answer = right;
+    
+    while (left <= right) {
+        int mid = (left + right) / 2;
+        
+        int teams = 0;
+        int i = 0;
+        while (i < n) {
+            int start = i;
+            while (i < n && r[i] - r[start] <= mid) {
+                i++;
+            }
+            teams++;
+        }
+        
+        if (teams <= m) {
+            answer = mid;
+            right = mid - 1;
+        } else {
+            left = mid + 1;
+        }
+    }
+    
+    cout << answer;
+  
+    return 0;
+}
+
