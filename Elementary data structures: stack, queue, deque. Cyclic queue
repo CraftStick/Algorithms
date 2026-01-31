@@ -1,0 +1,342 @@
+# Deque Implementation
+
+| | |
+| :--- | :--- |
+| **Input** | Standard input |
+| **Output** | Standard output |
+
+### Problem Statement
+Implement a "Deque" (double-ended queue) data structure. Write a program that models the deque's operations by processing a sequence of commands. Each command is identified by a numeric code from 1 to 9:
+
+1.  **`1 x`**: Add element `x` to the **front** of the deque.
+2.  **`2 x`**: Add element `x` to the **end** of the deque.
+3.  **`3`**: Extract the **first** element and print its value.
+4.  **`4`**: Extract the **last** element and print its value.
+5.  **`5`**: Print the value of the **first** element without removing it.
+6.  **`6`**: Print the value of the **last** element without removing it.
+7.  **`7`**: Print the current **number of elements** in the deque.
+8.  **`8`**: **Clear** the deque (remove all elements).
+9.  **`9`**: **Exit** the program.
+
+### Input Format
+Commands are provided one per line. If a command requires an argument (an element to add), it is given on the same line.
+- The number of elements in the deque will not exceed **100** at any time.
+- All operations are guaranteed to be valid (e.g., no extraction from an empty deque).
+- All input values fit within the `int` range.
+
+### Output Format
+Print the results of commands **3 through 7** as they are processed.
+
+### Examples
+| Input | Output |
+| :--- | :--- |
+| `2 1` <br> `6` <br> `9` | `1` |
+| `7` <br> `2 1` <br> `7` <br> `2 2` <br> `7` <br> `1 3` <br> `7` <br> `9` | `0` <br> `1` <br> `2` <br> `3` |
+
+
+#include <iostream>
+using namespace std;
+
+int main() {
+    int d[201];  
+    int f = 0;   
+    int b = 0;   
+    int s = 0;   
+    int m = 200; 
+    
+    int c;       
+    int x;      
+    bool r = true; 
+    
+    while (r) {
+        cin >> c;
+        
+        if (c == 1) {
+            cin >> x;
+            f = (f - 1 + m) % m;
+            d[f] = x;
+            s++;
+        }
+        else if (c == 2) {
+            cin >> x;
+            d[b] = x;
+            b = (b + 1) % m;
+            s++;
+        }
+        else if (c == 3) {
+            cout << d[f] << endl;
+            f = (f + 1) % m;
+            s--;
+        }
+        else if (c == 4) {
+            b = (b - 1 + m) % m;
+            cout << d[b] << endl;
+            s--;
+        }
+        else if (c == 5) {
+            cout << d[f] << endl;
+        }
+        else if (c == 6) {
+            cout << d[(b - 1 + m) % m] << endl;
+        }
+        else if (c == 7) {
+            cout << s << endl;
+        }
+        else if (c == 8) {
+            f = 0;
+            b = 0;
+            s = 0;
+        }
+        else if (c == 9) {
+            r = false;
+        }
+    }
+    
+    return 0;
+}
+
+
+# Reverse Polish Notation (RPN)
+
+| | |
+| :--- | :--- |
+| **Input** | Standard input |
+| **Output** | Standard output |
+
+### Problem Statement
+In **Reverse Polish Notation** (also called postfix notation), an operator is written after its two operands. For example, the sum of two numbers $A$ and $B$ is written as `A B +`. The expression `B C + D *` represents $(B + C) \cdot D$, and `A B C + D * +` represents $A + (B + C) \cdot D$.
+
+The advantage of postfix notation is that it requires no parentheses or operator precedence rules. Given an expression in RPN containing single-digit numbers and operations `+`, `-`, and `*`, calculate its value.
+
+### Input Format
+A single line contains an expression in RPN consisting of single-digit numbers and operators `+`, `-`, `*`.
+- The string contains at most 100 tokens (numbers and operations).
+- Tokens are separated by exactly one space.
+
+### Output Format
+Print the final value of the expression. It is guaranteed that the result (and all intermediate calculations) fits within a 32-bit signed integer (absolute value less than $2^{31}$).
+
+### Notes
+It is recommended to read the input character by character until a newline (`\n`) is encountered. In C++, you can use `getchar()` from `<cstdio>` and character classification functions from `<cctype>`.
+
+### Examples
+| Input | Output |
+| :--- | :--- |
+| `8 9 + 1 7 - *` | `-102` |
+
+#include <iostream>
+using namespace std;
+
+int main() {
+    int st[100]; 
+    int t = -1; 
+    char c;
+    
+    while (cin >> c) {
+        if (c >= '0' && c <= '9') {
+            st[++t] = c - '0';
+        } else {
+            int b = st[t--];
+            int a = st[t--];
+            int r;
+            
+            if (c == '+') r = a + b;
+            else if (c == '-') r = a - b;
+            else if (c == '*') r = a * b;
+            
+            st[++t] = r;
+        }
+    }
+    
+    cout << st[0] << endl;
+    return 0;
+}
+
+
+# Card Game "Drunkard" (Игра в «Пьяницу»)
+
+| | |
+| :--- | :--- |
+| **Input** | Standard input |
+| **Output** | Standard output |
+
+### Problem Statement
+Two players play a card game with the following rules:
+1. The deck is initially divided equally between two players.
+2. In each turn, both players reveal their top card.
+3. The player with the higher card takes both cards and places them at the **bottom** of their deck.
+4. The player who runs out of cards loses.
+
+**Special Rules:**
+- All cards have unique values from $0$ to $n-1$.
+- Generally, a higher card beats a lower card.
+- **Exception:** The lowest card ($0$) beats the highest card ($n-1$).
+- When a player wins a turn, they place the cards at the bottom of their deck in a specific order: first, the **first player's card**, then the **second player's card**.
+
+### Input Format
+- The first line contains an even integer $n$ ($2 \le n \le 100,000$) — the total number of cards.
+- The second line contains $n/2$ integers — the first player's cards.
+- The third line contains $n/2$ integers — the second player's cards.
+- Cards are listed from top to bottom (the first card in the line is the first to be played).
+
+### Output Format
+- If the first player wins, print `first` followed by the number of turns played.
+- If the second player wins, print `second` followed by the number of turns played.
+- If the game lasts more than $2 \cdot 10^5$ turns without finishing, print `draw`.
+
+### Examples
+| Input | Output |
+| :--- | :--- |
+| `10` <br> `1 3 5 7 9` <br> `2 4 6 8 0` | `second 5` |
+
+#include <iostream>
+using namespace std;
+
+int main() {
+    int n;
+    cin >> n;
+    
+    int a[400000], b[400000];
+    int a1 = 0, a2 = n/2 - 1;
+    int b1 = 0, b2 = n/2 - 1;
+    
+    for (int i = 0; i < n/2; i++) {
+        cin >> a[i];
+    }
+    
+    for (int i = 0; i < n/2; i++) {
+        cin >> b[i];
+    }
+    
+    int moves = 0;
+    int max_moves = 200000;
+    
+    while (moves < max_moves) {
+        if (a1 > a2) {
+            cout << "second " << moves;
+            return 0;
+        }
+        
+        if (b1 > b2) {
+            cout << "first " << moves;
+            return 0;
+        }
+        
+        int card1 = a[a1];
+        int card2 = b[b1];
+        
+        bool first_wins = false;
+        
+        if (card1 == 0 && card2 == n-1) {
+            first_wins = true;
+        } else if (card1 == n-1 && card2 == 0) {
+            first_wins = false;
+        } else if (card1 > card2) {
+            first_wins = true;
+        } else {
+            first_wins = false;
+        }
+        
+        if (first_wins) {
+            a2++;
+            a[a2] = card1;
+            a2++;
+            a[a2] = card2;
+        } else {
+            b2++;
+            b[b2] = card1;
+            b2++;
+            b[b2] = card2;
+        }
+        
+        a1++;
+        b1++;
+        moves++;
+    }
+    
+    cout << "draw";
+    return 0;
+}
+
+
+# Candy Chain (Конфеты)
+
+| | |
+| :--- | :--- |
+| **Input** | Standard input |
+| **Output** | Standard output |
+
+### Problem Statement
+You found a simple game on an old phone where candies of different types are arranged in a row. Whenever a continuous chain of **three or more** candies of the same type is formed, all candies in that chain are removed. The remaining candies on both sides then shift together, which may create a new chain of three or more identical candies, leading to further removals, and so on.
+
+Given the initial list of candies, determine the total number of candies that will be removed. Note that the initial configuration may contain more than one chain of identical candies.
+
+### Input Format
+- The first number is the count of candies in the initial configuration (up to 1000).
+- Following that are the candy types (integers from 0 to 9, where each integer represents a specific type).
+
+### Output Format
+Print a single integer — the total number of candies that will be removed.
+
+### Examples
+| Input | Output |
+| :--- | :--- |
+| `1 1` | `0` |
+| `5 1 2 3 4 5` | `0` |
+| `10 1 3 3 3 2 2 2 3 1 1` | `10` |
+
+#include <iostream>
+
+using namespace std;
+
+int main() {
+    int n;
+    cin >> n;
+    
+    int a[1000];
+    for (int i = 0; i < n; i++) {
+        cin >> a[i];
+    }
+    
+    int total = 0;
+    bool changed = true;
+    while (changed) {
+        changed = false;     
+        for (int i = 0; i < n; i++) {
+            if (a[i] == -1) 
+              continue;          
+            int j = i;
+            while (j < n && a[j] == a[i]) {
+                j++;
+            }
+            if (j - i >= 3) {
+                total += j - i;
+                for (int k = i; k < j; k++) {
+                    a[k] = -1;
+                }
+                changed = true;
+            }
+        }
+        if (changed) {
+            int b[1000];
+            int idx = 0;
+            for (int i = 0; i < n; i++) {
+                if (a[i] != -1) {
+                    b[idx++] = a[i];
+                }
+            }
+            for (int i = 0; i < idx; i++) {
+                a[i] = b[i];
+            }
+            for (int i = idx; i < n; i++) {
+                a[i] = -1;
+            }
+            n = idx;
+        }
+    }
+    cout << total;
+  
+    return 0;
+}
+
+
