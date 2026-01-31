@@ -62,5 +62,250 @@ int main() {
 
 
 
+### **2. Glove Shop**  
+***  
+**Score:** 100 / 100  
+**Evaluation:** Automatic  
+**Input:** standard input  
+**Output:** standard output  
+**Time limit:** 2 seconds  
+**Memory limit:** 64 megabytes  
+  
+### **Problem Statement**  
+A shop sells gloves of different sizes. It is known that one pair of gloves can be worn over another if it is at least three sizes larger. A customer came to the shop. It is required to determine the maximum number of glove pairs the salesperson can offer to the customer so that they can wear all of them simultaneously.  
+  
+### **Input Format**  
+First, the customer's hand size is entered (they cannot wear gloves of a smaller size), followed by the number of glove pairs in the shop and the size of each pair. The size is a natural number not exceeding 100, and the number of glove pairs in the shop is a non-negative integer not exceeding 1000.  
+  
+### **Output Format**  
+Print a single number — the maximum number of glove pairs.  
+  
+### **Examples**  
+
+| Input | Output |  
+| :--- | :--- |  
+| 60 <br> 2 <br> 60 63 | 2 |  
+***
+
+#include <iostream>
+
+using namespace std;
+
+int main() {
+    int a, n;
+    cin >> a >> n;
+    
+    int arr[1000];
+    for(int i = 0; i < n; i++) {
+        cin >> arr[i];
+    }
+    for(int i = 0; i < n; i++) {
+        for(int j = 0; j < n - i - 1; j++) {
+            if(arr[j] > arr[j + 1]) {
+                int temp = arr[j];
+                arr[j] = arr[j + 1];
+                arr[j + 1] = temp;
+            }
+        }
+    }
+    
+    int count = 0;
+    int size = -1000;
+    
+    for(int i = 0; i < n; i++) {
+        if(arr[i] >= a && arr[i] >= size + 3) {
+            count++;
+            size = arr[i];
+        }
+    }
+    
+    cout << count << endl;
+    return 0;
+}
+
+
+
+### **3. Competition Results**  
+***  
+**Score:** 100 / 100  
+**Evaluation:** Automatic  
+**Input:** standard input  
+**Output:** standard output  
+**Time limit:** 2 seconds  
+**Memory limit:** 64 megabytes  
+  
+### **Problem Statement**  
+A competition was recently held, the results of which you need to summarize. Each participant received an identification number and scored a certain number of points. You need to sort the list of competition participants by the number of points they scored.  
+  
+### **Input Format**  
+The first line contains the number $n$ ($1 \le n \le 1000$) — the number of participants. Each subsequent line contains the identification number and the score obtained by the corresponding participant. All numbers in the input file are integers and do not exceed $10^5$.  
+  
+### **Output Format**  
+Output the original list to the output file in descending order of scores. If some participants have the same scores, they should be sorted among themselves in ascending order of their identification number.  
+  
+### **Examples**  
+
+| Input | Output |  
+| :--- | :--- |  
+| 3 <br> 101 80 <br> 305 90 <br> 200 14 | 305 90 <br> 101 80 <br> 200 14 |  
+| 3 <br> 20 80 <br> 30 90 <br> 25 90 | 25 90 <br> 30 90 <br> 20 80 |  
+***
+
+#include <iostream>
+using namespace std;
+
+int main() {
+    int n;
+    cin >> n;
+
+    int arr[1000], a[1000];
+
+    for (int i = 0; i < n; i++) {
+        cin >> arr[i] >> a[i];
+    }
+
+    for (int i = 0; i < n - 1; i++) {
+        for (int j = 0; j < n - 1 - i; j++) {
+            if (a[j] < a[j + 1]) {
+                swap(a[j], a[j + 1]);
+                swap(arr[j], arr[j + 1]);
+            }
+            else if (a[j] == a[j + 1] && arr[j] > arr[j + 1]) {
+                swap(a[j], a[j + 1]);
+                swap(arr[j], arr[j + 1]);
+            }
+        }
+    }
+
+    for (int i = 0; i < n; i++) {
+        cout << arr[i] << " " << a[i] << endl;
+    }
+
+    return 0;
+}
+
+
+### **4. Generating Permutation with K Swaps**  
+***  
+**Score:** 100 / 100  
+**Evaluation:** Automatic  
+**Input:** standard input  
+**Output:** standard output  
+**Time limit:** 2 seconds  
+**Memory limit:** 64 megabytes  
+  
+### **Problem Statement**  
+Given two numbers $n$ and $k$. Output a permutation of $n$ numbers (integers from 1 to $n$ without repetition) such that performing ascending bubble sort on the corresponding array makes exactly $k$ swaps. If there are multiple possible answers, output any one.  
+  
+### **Input Format**  
+Given a natural number $n$ ($n \le 100$) and a non-negative integer $k$. It is guaranteed that a solution exists for all test data sets.  
+  
+### **Output Format**  
+Output the required permutation in a single line. Separate numbers with spaces.  
+  
+### **Examples**  
+
+| Input | Output |  
+| :--- | :--- |  
+| 5 3 | 1 5 2 3 4 |  
+| 1 0 | 1 |  
+***
+
+#include <iostream>
+using namespace std;
+
+int main() {
+    int n, k;
+    cin >> n >> k;
+
+    int a[105]; 
+    int l = 1, r = n;
+    int pos = 0;
+
+    while (l <= r) {
+        int len = r - l;
+        if (k >= len) {
+            a[pos] = r;
+            pos = pos + 1;
+            k -= len;
+            r--;
+        } else {
+            a[pos] = l;
+            pos = pos + 1;
+            l++;
+        }
+    }
+
+    for (int i = 0; i < n; i++) {
+        cout << a[i] << (i + 1 == n ? '\n' : ' ');
+    }
+
+    return 0;
+}
+
+
+
+### **1. Discounts**  
+***  
+**Score:** 100 / 100  
+**Evaluation:** Automatic  
+**Input:** standard input  
+**Output:** standard output  
+**Time limit:** 2 seconds  
+**Memory limit:** 64 megabytes  
+  
+### **Problem Statement**  
+The supermarket is running an unprecedented promotion: "**Buy any two items, get the third one for free\***", with an asterisk in fine print at the bottom: "\*** — the two most expensive items of the three you choose are paid for**". Vasya decided which items he wants to buy on his way to the supermarket and found out how much they cost. Help him determine the minimum amount of money he needs to take with him to end up being the happy owner of all these items.  
+  
+### **Input Format**  
+The input file first specifies the number $N$ ($1 \le N \le 1000$), followed by $N$ numbers — the costs of the items selected by Vasya. All costs are natural numbers not exceeding 10000.  
+  
+### **Output Format**  
+Output a single number to the output file — the amount of money Vasya should take with him to the supermarket (the minimum possible).  
+  
+### **Notes**  
+In the test case from example #1, Vasya first goes through the checkout with items costing 1, 3, and 4 — pays 7 rubles and gets the item costing 1 as a gift. Then he goes into the supermarket again and buys items costing 5 and 7, getting another item costing 5 as a gift. In the second test case, on his first trip to the supermarket, Vasya buys items costing 15 and 25 rubles, taking the 8 ruble item as a gift. On his second trip to the supermarket, he buys items costing 3 and 8, without taking any gift.  
+  
+### **Examples**  
+
+| Input | Output |  
+| :--- | :--- |  
+| 6 <br> 1 5 4 3 5 7 | 19 |  
+| 5 <br> 3 15 25 8 8 | 51 |  
+***
+
+#include <iostream>
+using namespace std;
+
+int main() {
+    int n;
+    cin >> n;
+    int a[1005];
+    for (int i = 0; i < n; i++) {
+        cin >> a[i];
+    }
+
+    for (int i = 0; i < n - 1; i++) {
+        for (int j = 0; j < n - i - 1; j++) {
+            if (a[j] < a[j + 1]) {
+                int t = a[j];
+                a[j] = a[j + 1];
+                a[j + 1] = t;
+            }
+        }
+    }
+
+    int sum = 0;
+    for (int i = 0; i < n; i++) {
+        if ((i + 1) % 3 != 0) { 
+            sum += a[i]; 
+        }
+    }
+
+    cout << sum << "\n";
+    return 0;
+}
+
+
 
 
