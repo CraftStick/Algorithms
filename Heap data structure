@@ -1,0 +1,94 @@
+# Heap Implementation (Реализация кучи)
+
+| | |
+| :--- | :--- |
+| **Input** | Standard input |
+| **Output** | Standard output |
+
+### Problem Statement
+In this problem, you are required to implement a **Heap** data structure. Your program must process the following types of queries:
+
+1.  **Clear**: Make the heap empty (remove all existing elements). No output is required for this operation.
+2.  **Add $n$**: Add the number $n$ to the heap. No output is required for this operation.
+3.  **Extract Max**: Remove the maximum value from the heap and print it. If the heap is empty, print `CANNOT` instead.
+
+### Input Format
+- The first line contains a natural number $k$ ($1 \le k \le 200,000$) — the total number of queries.
+- The following $k$ lines contain queries of types 1, 2, or 3, each on a separate line according to the format described above.
+- All numbers provided in type 2 queries are natural numbers not exceeding $10^9$.
+
+### Output Format
+For each query of type 3, print the result on a new line.
+
+### Examples
+| Input | Output |
+| :--- | :--- |
+| `11` <br> `2 192168812` <br> `2 125` <br> `2 321` <br> `3` <br> `3` <br> `1` <br> `2 7` <br> `2 555` <br> `3` <br> `3` <br> `3` | `192168812` <br> `321` <br> `555` <br> `7` <br> `CANNOT` |
+
+#include <iostream>
+using namespace std;
+
+const int N = 200000;
+int heap[N];
+int heap_size = 0;
+
+void siftUp(int v) {
+    while (v > 0 && heap[v] > heap[(v - 1) / 2]) {
+        swap(heap[v], heap[(v - 1) / 2]);
+        v = (v - 1) / 2;
+    }
+}
+
+void siftDown(int v) {
+    while (2 * v + 1 < heap_size) {
+        int left = 2 * v + 1;
+        int right = 2 * v + 2;
+        int maxCh = left;
+        if (right < heap_size && heap[right] > heap[left])
+            maxCh = right;
+        if (heap[v] >= heap[maxCh])
+            return;
+        swap(heap[v], heap[maxCh]);
+        v = maxCh;
+    }
+}
+
+void insert(int x) {
+    heap[heap_size++] = x;
+    siftUp(heap_size - 1);
+}
+
+int extractMax() {
+    int t = heap[0];
+    heap[0] = heap[--heap_size];
+    siftDown(0);
+    return t;
+}
+
+int main() {
+    int k;
+    cin >> k;
+    
+    for (int i = 0; i < k; i++) {
+        int cmd;
+        cin >> cmd;
+        
+        if (cmd == 1) {
+            heap_size = 0;
+        }
+        else if (cmd == 2) {
+            int num;
+            cin >> num;
+            insert(num);
+        }
+        else if (cmd == 3) {
+            if (heap_size == 0) {
+                cout << "CANNOT" << endl;
+            } else {
+                cout << extractMax() << endl;
+            }
+        }
+    }
+    
+    return 0;
+}
