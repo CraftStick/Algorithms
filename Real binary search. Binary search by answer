@@ -1,0 +1,309 @@
+# n-th Root (Real Binary Search)
+
+| | |
+| :--- | :--- |
+| **Input** | Standard input |
+| **Output** | Standard output |
+
+### Problem Statement
+Given a real number $a$ and a natural number $n$. Calculate the $n$-th root of $a$ ($\sqrt[n]{a}$) using **binary search over real numbers**.
+
+### Input Format
+The input contains two numbers:
+1. $a$ — a non-negative real number ($0 \le a \le 1000$), given with up to 6 decimal places.
+2. $n$ — a natural number ($1 \le n \le 10$).
+
+### Output Format
+Print the value of $\sqrt[n]{a}$ with a precision of at least 6 decimal places.
+
+### Examples
+| Input | Output |
+| :--- | :--- |
+| `2` <br> `2` | `1.41421356237` |
+
+#include <iostream>
+#include <iomanip>
+using namespace std;
+
+int main() {
+    double a;
+    int n;
+    cin >> a >> n;
+    
+    double left = 0.0;
+    double right = a;
+    if (a < 1.0) 
+      right = 1.0;
+    
+    for (int i = 0; i < 100; i++) {
+        double mid = (left + right) / 2.0;
+        
+        double res = 1.0;
+        for (int j = 0; j < n; j++) {
+            res = res * mid;
+        }
+        
+        if (res > a) {
+            right = mid;
+        } else {
+            left = mid;
+        }
+    }
+    
+    cout << fixed << setprecision(11) << left;
+    
+    return 0;
+
+
+# Equation $x^2 + \sqrt{x} = C$
+
+| | |
+| :--- | :--- |
+| **Input** | Standard input |
+| **Output** | Standard output |
+
+### Problem Statement
+Find a number $x$ such that $x^2 + \sqrt{x} = C$ with a precision of at least 6 decimal places.
+
+### Input Format
+A single line contains a real number $C$ ($1 \le C \le 10^{10}$).
+
+### Output Format
+Print a single number — the value of $x$.
+
+### Examples
+| Input | Output |
+| :--- | :--- |
+| `2.0000000000` | `1.000000000` |
+| `18.0000000000` | `4.000000000` |
+
+#include <iostream>
+using namespace std;
+
+int main() {
+    double C;
+    cin >> C;
+    
+    double left = 0.0;
+    double right = C;
+   
+    for (int i = 0; i < 100; i++) {
+        double mid = (left + right) / 2.0;
+        double value = mid * mid;
+
+        double a = 1.0;
+      
+        for (int j = 0; j < 20; j++) {
+            a = (a + mid / a) / 2.0;
+        }
+        
+        value += a;
+        
+        if (value < C) {
+            left = mid;
+        } else {
+            right = mid;
+        }
+    }
+    
+    cout.precision(10);
+    cout << fixed << left << endl;
+    
+    return 0;
+}
+
+
+# Christmas Ornaments Factory (Елочные шары)
+
+| | |
+| :--- | :--- |
+| **Input** | Standard input |
+| **Output** | Standard output |
+
+### Problem Statement
+An IT school placed a large order for $N$ Christmas ornaments decorated with snowflakes and pinecones. 
+
+The factory has two masters. The first master takes $x$ minutes to paint one ornament, and the second one takes $y$ minutes. They work independently in separate rooms. However, to start working, each master needs an actual finished ornament in front of them to copy the design. Initially, they have only **one** sample ornament (which does not count toward the $N$ required for the order). 
+
+What is the minimum time required to paint all $N$ ornaments?
+
+### Input Format
+The input consists of three natural numbers $N$, $x$, and $y$ separated by spaces ($1 \le N \le 2 \cdot 10^8$, $1 \le x, y \le 10$).
+
+### Output Format
+Print a single integer — the minimum time in minutes required to complete the order of $N$ ornaments.
+
+### Examples
+| Input | Output |
+| :--- | :--- |
+| `4 1 1` | `3` |
+| `5 1 2` | `4` |
+
+**Explanation for Example 1:**
+The first ornament must be painted by the faster master (taking $\min(x, y)$ time). After that, both masters have a sample and can work simultaneously.
+
+#include <iostream>
+
+using namespace std;
+
+int main() {
+    long long N, x, y;
+    cin >> N >> x >> y;
+    
+    long long m = min(x, y);
+    N--; 
+    
+    if (N <= 0) {
+        cout << m << endl;
+        return 0;
+    }
+    
+    long long left = 0, right = 1e18;
+    while (left < right) {
+        long long mid = (left + right) / 2;
+        long long total = (mid / x) + (mid / y);
+        if (total >= N) {
+            right = mid;
+        } else {
+            left = mid + 1;
+        }
+    }
+    
+    cout << left + m << endl;
+    
+    return 0;
+}
+
+
+# Ribbon Cutting (Ленточки)
+
+| | |
+| :--- | :--- |
+| **Input** | Standard input |
+| **Output** | Standard output |
+
+### Problem Statement
+Masha has $N$ satin ribbons with lengths $L_1, L_2, \dots, L_N$ centimeters. To wrap Christmas presents, she needs to cut these ribbons into $K$ equal pieces. Masha wants these pieces to be as long as possible, and their length must be an integer number of centimeters.
+
+### Input Format
+- The first line contains two integers $N$ and $K$ ($1 \le N, K \le 10^4 + 1$).
+- The following $N$ lines each contain one integer — the length of a ribbon in centimeters.
+- Ribbon lengths range from $1$ cm to $100$ km ($10^7$ cm) inclusive.
+
+### Output Format
+Print a single integer — the maximum possible length (in centimeters) of the pieces that allows Masha to get at least $K$ segments. If it is impossible to obtain $K$ segments even with a length of $1$ cm, print `0`.
+
+### Examples
+| Input | Output |
+| :--- | :--- |
+| `4 11` <br> `802` <br> `743` <br> `457` <br> `539` | `200` |
+
+#include <iostream>
+
+using namespace std;
+
+int main() {
+    int N, K;
+    cin >> N >> K;
+    
+    long long* a = new long long[N];
+    long long max_len = 0;
+    for (int i = 0; i < N; i++) {
+        cin >> a[i];
+        if (a[i] > max_len) {
+            max_len = a[i];
+        }
+    }
+    
+    long long left = 0;
+    long long right = max_len + 1;
+    
+    while (left < right - 1) {
+        long long mid = (left + right) / 2;
+        
+        long long b = 0;
+        for (int i = 0; i < N; i++) {
+            b += a[i] / mid;
+        }
+        
+        if (b >= K) {
+            left = mid;
+        } else {
+            right = mid;
+        }
+    }
+    
+    cout << left << endl;
+    
+    delete[] a;
+    return 0;
+}
+
+
+# Aggressive Cows (Коровы в стойлах)
+
+| | |
+| :--- | :--- |
+| **Input** | Standard input |
+| **Output** | Standard output |
+
+### Problem Statement
+There are stalls located along a straight line. You need to place $K$ cows in these stalls such that the **minimum distance** between any two cows is as large as possible.
+
+### Input Format
+- The first line contains two integers: $N$ ($2 \le N \le 10,000$) — the number of stalls, and $K$ ($2 \le K \le N$) — the number of cows.
+- The second line contains $N$ natural numbers in ascending order — the coordinates of the stalls (coordinates do not exceed $10^9$).
+
+### Output Format
+Print a single integer — the largest possible minimum distance.
+
+### Examples
+| Input | Output |
+| :--- | :--- |
+| `6 3` <br> `2 5 7 11 15 20` | `9` |
+
+**Explanation for the example:**  
+If you place cows in stalls at coordinates 2, 11, and 20, the distances between neighbors will be 9 and 9. The minimum distance is 9. Any other placement will result in a smaller minimum distance.
+
+#include <iostream>
+
+using namespace std;
+
+int main() {
+    int N, K;
+    cin >> N >> K;
+    
+    int* a = new int[N];
+    for (int i = 0; i < N; i++) {
+        cin >> a[i];
+    }
+    
+    int left = 0;
+    int right = a[N - 1] - a[0] + 1;
+    
+    while (left < right - 1) {
+        int mid = (left + right) / 2;
+        
+        int b = 1;
+        int c = a[0];
+        
+        for (int i = 1; i < N; i++) {
+            if (a[i] - c >= mid) {
+                b++;
+                c = a[i];
+            }
+        }
+        
+        if (b >= K) {
+            left = mid;
+        } else {
+            right = mid;
+        }
+    }
+    
+    cout << left << endl;
+    
+    delete[] a;
+    return 0;
+}
+
