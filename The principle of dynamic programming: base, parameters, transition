@@ -1,0 +1,304 @@
+# Ball on the Stairs (Мячик на лесенке)
+
+| | |
+| :--- | :--- |
+| **Input** | Standard input |
+| **Output** | Standard output |
+
+### Problem Statement
+A ball is at the top of a staircase with $N$ steps. It begins jumping down toward the base. In a single move, the ball can jump:
+- To the next step (1 step down);
+- Over one step (2 steps down);
+- Over two steps (3 steps down).
+
+For example, if the ball is on the 8th step, it can jump to the 7th, 6th, or 5th step.
+
+Determine the total number of possible "routes" the ball can take from the top step to the ground (step 0).
+
+### Input Format
+A single integer $N$ where $0 < N < 31$.
+
+### Output Format
+Print a single integer — the number of possible routes.
+
+### Examples
+| Input | Output |
+| :--- | :--- |
+| `4` | `7` |
+| `5` | `13` |
+
+#include <iostream>
+using namespace std;
+
+int main(){
+  int n;
+  cin >> n;
+  
+  int D[31];
+  
+  D[0] = 1;
+  D[1] = 1;
+  D[2] = 2;
+  
+  for(int i = 3; i <= n; i++){
+    D[i] = D[i - 1] + D[i - 2] + D[i -3];
+  }
+  cout << D[n];
+  
+  return 0;
+}
+
+
+# Paid Staircase (Платная лестница)
+
+| | |
+| :--- | :--- |
+| **Input** | Standard input |
+| **Output** | Standard output |
+
+### Problem Statement
+A boy is at the bottom of a paid staircase. To step on any stair, he must pay the amount specified for that step. From his current position, the boy can either:
+- Move to the next step (+1);
+- Jump over one step (+2).
+
+Find the **minimum total sum** the boy needs to pay to reach the top ($N$-th) step.
+
+### Input Format
+- The first line contains a natural number $N$ ($N \le 100$) — the number of steps.
+- The second line contains $N$ natural numbers (each $\le 100$) — the cost of each step from bottom to top.
+
+### Output Format
+Print a single integer — the minimum possible cost to reach the top step.
+
+### Notes
+In the provided example, it is optimal to jump over steps #1 and #3.
+
+### Examples
+| Input | Output |
+| :--- | :--- |
+| `5` <br> `2 1 3 2 1` | `4` |
+
+#include <iostream>
+
+using namespace std;
+
+int main() {
+    int n;
+    cin >> n;
+    
+    int price[101];
+  
+    for (int i = 1; i <= n; i++) {
+        cin >> price[i];
+    }
+    
+    int dp[101];
+    dp[0] = 0;
+    dp[1] = price[1];
+    
+    for (int i = 2; i <= n; i++) {
+        dp[i] = price[i] + min(dp[i - 1], dp[i - 2]);
+    }
+    
+    cout << dp[n];
+    
+    return 0;
+}
+
+
+# Grasshopper and Frogs (Кузнечик и лягушки)
+
+| | |
+| :--- | :--- |
+| **Input** | Standard input |
+| **Output** | Standard output |
+
+### Problem Statement
+A grasshopper jumps along pillars arranged in a line at equal distances. The pillars are numbered from $1$ to $N$. Initially, the grasshopper is sitting on pillar $1$. It can jump forward any distance from $1$ to $K$ pillars from its current position.
+
+However, some pillars are occupied by frogs that eat grasshoppers. The grasshopper **must not** land on these pillars! Determine the number of safe ways the grasshopper can reach pillar $N$. Note that the grasshopper cannot jump backward.
+
+### Input Format
+- The first line contains two natural numbers $N$ and $K$ ($1 \le N, K \le 32$).
+- The second line contains the number of frogs $L$ ($0 \le L \le N - 2$).
+- The third line contains $L$ natural numbers — the indices of the pillars where the frogs are located (pillars $1$ and $N$ are always safe).
+
+### Output Format
+Print a single integer — the number of safe ways to reach pillar $N$.
+
+### Examples
+| Input | Output |
+| :--- | :--- |
+| `6 4` <br> `2` <br> `2 4` | `3` |
+| `6 6` <br> `0` | `16` |
+
+#include <iostream>
+
+using namespace std;
+
+int main() {
+    int N, K, L;
+    cin >> N >> K >> L;
+    
+    int frog[32];
+  
+    for (int i = 0; i < L; i++) {
+        cin >> frog[i];
+    }
+    
+    long long dp[33];
+    dp[1] = 1;
+    
+    for (int i = 2; i <= N; i++) {
+        int bad = 0;
+        for (int j = 0; j < L; j++) {
+            if (frog[j] == i) {
+                bad = 1;
+                break;
+            }
+        }
+        
+        if (bad == 0) {
+            long long sum = 0;
+            for (int j = 1; j <= K; j++) {
+                if (i - j >= 1) {
+                    sum += dp[i - j];
+                }
+            }
+            dp[i] = sum;
+        } else {
+            dp[i] = 0;
+        }
+    }
+    
+    cout << dp[N];
+    
+    return 0;
+}
+
+
+# Radioactive Waste Storage (Радиоактивные отходы)
+
+| | |
+| :--- | :--- |
+| **Input** | Standard input |
+| **Output** | Standard output |
+
+### Problem Statement
+In the processing of radioactive materials, three types of waste are produced: highly dangerous (**Type A**), conditionally safe (**Type B**), and completely harmless (**Type C**). All types are stored in identical containers. Once filled, the containers are stacked in a single vertical pile.
+
+A stack is considered **explosive** if it contains more than one Type A container in a row (i.e., two or more Type A containers are placed directly on top of each other). For a given number of containers $N$, determine the total number of possible **safe** stacks.
+
+### Input Format
+A single integer $N$ ($1 \le N \le 20$) — the number of containers in the stack.
+
+### Output Format
+Print a single integer — the number of safe ways to form a stack of $N$ containers.
+
+### Examples
+| Input | Output |
+| :--- | :--- |
+| `2` | `8` |
+
+**Explanation for $N=2$:**
+Possible safe combinations: AA (No!), AB, AC, BA, BB, BC, CA, CB, CC. 
+Total: $3^2 - 1 = 8$.
+
+#include <iostream>
+using namespace std;
+
+int main() {
+    int N;
+    cin >> N;
+    
+    long long dpA[21];
+    long long dpNotA[21];
+    
+    dpA[1] = 1;
+    dpNotA[1] = 2;
+    
+    for (int i = 2; i <= N; i++) {
+        dpA[i] = dpNotA[i-1];
+        dpNotA[i] = (dpA[i-1] + dpNotA[i-1]) * 2;
+    }
+    
+    long long total = dpA[N] + dpNotA[N];
+    cout << total << endl;
+    
+    return 0;
+}
+
+
+# Nails (Гвоздики)
+
+| | |
+| :--- | :--- |
+| **Input** | Standard input |
+| **Output** | Standard output |
+
+### Problem Statement
+A row of nails is driven into a wooden board. Any two nails can be connected with a piece of thread. You need to connect some pairs of nails with threads such that:
+1. Every nail has **at least one** thread tied to it.
+2. The **total length** of all the threads used is minimized.
+
+### Input Format
+- The first line contains an integer $N$ ($2 \le N \le 100$) — the number of nails.
+- The second line contains $N$ integers — the coordinates of all nails (non-negative integers not exceeding $10,000$).
+
+### Output Format
+Print a single integer — the minimum total length of the threads.
+
+### Examples
+| Input | Output |
+| :--- | :--- |
+| `5` <br> `4 10 0 12 2` | `6` |
+
+#include <iostream>
+using namespace std;
+
+int main() {
+    int N;
+    cin >> N;
+    
+    int a[100];
+    for (int i = 0; i < N; i++) {
+        cin >> a[i];
+    }
+    
+    for (int i = 0; i < N; i++) {
+        for (int j = 0; j < N - i - 1; j++) {
+            if (a[j] > a[j + 1]) {
+                int temp = a[j];
+                a[j] = a[j + 1];
+                a[j + 1] = temp;
+            }
+        }
+    }
+    
+    if (N == 2) {
+        cout << a[1] - a[0];
+        return 0;
+    }
+    
+    int dp[100];
+    
+    dp[0] = 1000000;
+    dp[1] = a[1] - a[0];
+    
+    for (int i = 2; i < N; i++) {
+        int opt1 = dp[i - 1] + (a[i] - a[i - 1]);
+        int opt2 = dp[i - 2] + (a[i] - a[i - 1]);
+        if (opt1 < opt2) {
+            dp[i] = opt1;
+        } else {
+            dp[i] = opt2;
+        }
+    }
+    
+    cout << dp[N - 1];
+    
+    return 0;
+}
+
+
+
