@@ -1,0 +1,180 @@
+2. 1 Library method
+# Insertion Sort Step-by-Step
+
+## Problem Statement
+Demonstrate the step-by-step execution of the **Insertion Sort** algorithm in ascending order. 
+
+**Task:** Output the state of the array after each insertion on a separate line. If the array is initially sorted, do not output anything.
+
+## Input Format
+- The first line contains an integer $n$ ($1 \le n \le 100$) — the number of elements.
+- The second line contains the array: a sequence of natural numbers $\le 10^9$.
+
+## Output Format
+Print the array state only if an insertion **changed** the order of elements.
+
+## Examples
+
+| Input | Output |
+| :--- | :--- |
+| `2` <br> `2 1` | `1 2` |
+| `4` <br> `2 1 5 3` | `1 2 5 3` <br> `1 2 3 5` |
+
+## Implementation Logic
+The algorithm iterates from the second element to the last. For each element, it finds its correct position among the previously sorted elements. A print command is triggered only if the element was actually moved.
+
+#include <iostream>
+using namespace std;
+
+int main() {
+    int n;
+    cin >> n;
+    long long arr[100];
+
+    for (int i = 0; i < n; i++) {
+        cin >> arr[i];
+    }
+
+    for (int i = 1; i < n; i++) {
+        long long key = arr[i];
+        int j = i - 1;
+        while (j >= 0 && arr[j] > key) {
+            arr[j + 1] = arr[j];
+            j--;
+        }
+        arr[j + 1] = key;
+        if (j + 1 != i) {
+            for (int k = 0; k < n; k++) {
+                cout << arr[k] << " ";
+            }
+            cout << "\n";
+        }
+    }
+
+    return 0;
+}
+
+
+2. 2 Anton solves problems
+# Anton's Task Optimization
+
+## Problem Statement
+Anton is solving $N$ tasks for a summer math camp. The tasks can be completed in any order, but there is a catch: the time required for a task depends on its position in the sequence. 
+
+If task $i$ is performed $j$-th in order, it takes $T_i \times j$ time. 
+*Example:* 
+- Order (Task 1, Task 2): Total time = $T_1 \times 1 + T_2 \times 2$
+- Order (Task 2, Task 1): Total time = $T_2 \times 1 + T_1 \times 2$
+
+**Goal:** Find the minimum total time to complete all $N$ tasks.
+
+## Input Format
+- First line: An integer $N$ ($0 < N \le 10$).
+- Second line: $N$ integers $T_1, T_2, \dots, T_n$ ($0 < T_i \le 100$).
+
+## Output Format
+- A single integer representing the minimum total time.
+
+## Examples
+| Input | Output |
+| :--- | :--- |
+| `1` <br> `23` | `23` |
+| `2` <br> `52 37` | `126` |
+
+## Solution Logic
+To minimize the sum $\sum (T_i \times j)$, we use a **Greedy Strategy**: 
+1. Sort the time coefficients $T_i$ in **descending** order.
+2. Multiply the largest coefficients by the smallest sequence numbers ($j=1, 2, \dots$).
+
+#include <iostream>
+using namespace std;
+
+int main() {
+    int N;
+    cin >> N;
+    int T[10];
+  
+    for (int i = 0; i < N; i++) cin >> T[i];
+    for (int i = 0; i < N - 1; i++) {
+        for (int j = 0; j < N - 1 - i; j++) {
+            if (T[j] < T[j + 1]) {
+                int tmp = T[j];
+                T[j] = T[j + 1];
+                T[j + 1] = tmp;
+            }
+        }
+    }
+
+    int result = 0;
+    for (int i = 0; i < N; i++) {
+        result += T[i] * (i + 1);
+    }
+
+    cout << result;
+    return 0;
+}
+
+
+2.3 Tubes of food
+# Food Compartment Ejection Logic
+
+## Problem Statement
+During an emergency landing on a remote planet, unknown microorganisms infiltrated a spacecraft. These organisms consume human food stored in tubes, each eating exactly **1 gram** before falling into hibernation.
+
+The ship's safety system flags a tube as **infected** only when **more than half** of the food in that specific tube has been consumed. The entire food compartment is **ejected** if **more than half** of all tubes in the compartment are infected.
+
+**Goal:** Given the food mass in each tube, determine the **minimum number** of microorganisms required to cause the compartment to be ejected.
+
+## Input Format
+- The first line contains an odd integer $k$ ($1 \le k \le 101$) — the number of tubes.
+- The second line contains $k$ odd integers — the mass of food in each tube (in grams).
+- The total mass of food does not exceed $9999$ grams.
+
+## Output Format
+- Print the minimum number of microorganisms needed to trigger the compartment ejection.
+
+## Example
+**Input:**
+```text
+3
+5 7 5
+
+#include <iostream>
+using namespace std;
+
+int main() {
+    int k;
+    cin >> k;
+    int t[101];
+    
+    for (int i = 0; i < k; i++) {
+        cin >> t[i];
+    }
+   
+    int cost[101];
+    for (int i = 0; i < k; i++) {
+        cost[i] = (t[i] / 2) + 1;
+    }
+    
+    for (int i = 0; i < k - 1; i++) {
+        for (int j = 0; j < k - i - 1; j++) {
+            if (cost[j] > cost[j + 1]) {
+                int temp = cost[j]; 
+                cost[j] = cost[j + 1];
+                cost[j + 1] = temp;
+            }
+        }
+    }
+    
+    int n = (k / 2) + 1;
+    int sum = 0; 
+    for (int i = 0; i < n; i++) {
+        sum += cost[i];
+    }
+    
+    cout << sum;
+    return 0;
+}
+
+
+
