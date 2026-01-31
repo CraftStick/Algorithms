@@ -1,1 +1,66 @@
+### **1. Bubble Sort**<br>
+***<br>
+**Score:** 100 / 100<br>
+**Evaluation:** Automatic<br>
+**Input:** standard input<br>
+**Output:** standard output<br>
+**Time limit:** 2 seconds<br>
+**Memory limit:** 64 megabytes<br>
+<br>
+### **Problem Statement**<br>
+Determine the number of **swaps** the ascending bubble sort algorithm will perform for a given array.<br>
+<br>
+### **Input Format**<br>
+The first line contains an integer $n$ ($1 \le n \le 1000$) — the number of elements in the array.<br>
+The second line contains the array itself. It is guaranteed that all elements are **distinct integers** with absolute values not exceeding $10^9$.<br>
+<br>
+### **Output Format**<br>
+Print a single integer — the total number of **swaps** made by the bubble sort algorithm.<br>
+<br>
+### **Examples**<br>
+
+| Input | Output |<br>
+| :--- | :--- |<br>
+| 3 <br> 1 2 3 | 0 |<br>
+| 2 <br> 2 1 | 1 |<br>
+| 4 <br> 4 1 5 3 | 3 |<br>
+***
+
+
+#include <iostream>
+
+using namespace std;
+
+int main() {
+    int n;
+  cin >> n;  
+
+    int arr[1001];  
+    for (int i = 0; i < n; i++) {
+        cin >> arr[i];  
+    }
+
+    int swap = 0; 
+
+ 
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n - 1 - i; j++) {
+            if (arr[j] > arr[j + 1]) {
+             
+                int temp = arr[j];
+                arr[j] = arr[j + 1];
+                arr[j + 1] = temp;
+                swap++;  
+            }
+        }
+    }
+
+  cout << swap << endl; 
+
+    return 0;
+}
+
+
+
+
 
