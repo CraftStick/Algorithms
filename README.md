@@ -1,12 +1,17 @@
-# Algorithms-Solutions
-Beyond just code: most solutions include detailed logic explanations and step-by-step visualizations.
+# Algorithms
 
-<div align="center">
+[English](README.md) · [Русский](README.ru.md)
 
----
+Solutions to algorithm problems with detailed explanations of the logic and step-by-step visualizations.
 
-Если было полезно — поставь ⭐, это очень помогает!
+## Features
 
-If you found this useful, consider leaving a ⭐ — it helps a lot!
+- Sorting: quadratic sorts, counting sort, quicksort, k-th order statistics
+- Binary search, including search by answer
+- Recursion and dynamic programming
+- Data structures: stack, queue, deque, heap
+- Graphs: traversals (BFS, DFS), Dijkstra's algorithm, topological sorting
 
-</div>
+## Usage
+
+Each topic lives in its own folder. Open a folder to see the problems, solutions and explanations.
